@@ -17,10 +17,16 @@ task_contenttype = ContentType.objects.get(app_label='tasks', model='task')
 
 @register.inclusion_tag("tasks/task_item.html", takes_context=True)
 def show_task(context, task, nudge):
+    # If is_observing is set in context, pass it along.
+    try:
+        is_observing = context['is_observing']
+    except KeyError:
+        is_observing = False
     
     return {
         "nudge": nudge,
         "task": task,
+        'is_observing': is_observing,
         "MEDIA_URL": settings.MEDIA_URL,
         "group": context["group"],
     }

@@ -222,3 +222,8 @@ class Nudge(models.Model):
     nudger = models.ForeignKey(User, related_name="nudger", verbose_name=_('nudger'))
     task = models.ForeignKey(Task, related_name="task_nudge", verbose_name=_('task'))
     modified = models.DateTimeField(_('nudge date'), default=datetime.now)
+
+
+if notification is not None:
+    models.signals.post_save.connect(notification.handle_observations, sender=Task)
+

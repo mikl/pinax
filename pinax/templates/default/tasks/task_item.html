@@ -46,6 +46,15 @@
                 {% endif %}
             {% endif %}
         </div>
+        {% if is_observing %}
+            <form action="{% groupurl task_observe_stop group id=task.id %}" method="post">
+                <input type="submit" value="{% trans "Stop Observing Task" %}">
+            </form>
+        {% else %}
+            <form action="{% groupurl task_observe group id=task.id %}" method="post">
+                <input type="submit" value="{% trans "Observe Task" %}">
+            </form>
+        {% endif %}
     </div>
     <div class="bulk">
         <h2 class="task_{{ task.get_state_display }}">#{{ task.id }}: <a href="{{ task.get_absolute_url }}">{{ task.summary }}</a></h2>

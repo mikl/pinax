@@ -16,6 +16,9 @@ try:
         notification.create_notice_type("tasks_tags", _("Task Tag Update"), _("there has been a change in the tagging of a task"), default=2)
         notification.create_notice_type("tasks_nudge", _("Task Nudge"), _("there has been a nudge of a task"), default=2)
         
+        # Notification for observed tasks
+        notification.create_notice_type("observed_tasks_update", _("Observed Task Update"), _("there has been update to one of your observed tasks"), default=2)
+
     signals.post_syncdb.connect(create_notice_types, sender=notification)
 except ImproperlyConfigured:
     print "Skipping creation of NoticeTypes as notification app not found"

@@ -7,7 +7,7 @@ from operator import attrgetter
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseNotAllowed
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
@@ -306,13 +306,43 @@ def task(request, id, group_slug=None, template_name="tasks/task.html", bridge=N
     # get the nudge history
     nudge['history'] = Nudge.objects.filter(task__exact=task)
 
+    is_observing = notification.is_observing(task, request.user)
+
     return render_to_response(template_name, {
         "group": group,
         "nudge": nudge,
         "task": task,
         "is_member": is_member,
+        "is_observing": is_observing,
         "form": form,
     }, context_instance=RequestContext(request))
+
+
+@login_required
+def task_observe(request, id):
+    if request.method == 'POST':
+        task = get_object_or_404(Task, id=id)
+
+        is_observing = notification.is_observing(task, request.user)
+
+        # Make sure that you'll not have double observations if you
+        # should somehow visit the observation callback twice.
+        if not is_observing:
+            notification.observe(task, request.user, 'observed_tasks_update')
+
+        return HttpResponseRedirect(reverse('task_detail', kwargs={'id': id}))
+    return HttpResponseNotAllowed(['POST'])
+
+
+@login_required
+def task_observe_stop(request, id):
+    if request.method == 'POST':
+        task = get_object_or_404(Task, id=id)
+
+        notification.stop_observing(task, request.user)
+
+        return HttpResponseRedirect(reverse('task_detail', kwargs={'id': id}))
+    return HttpResponseNotAllowed(['POST'])
 
 
 @login_required
