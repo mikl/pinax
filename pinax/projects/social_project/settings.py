@@ -45,7 +45,7 @@ SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-USE_I18N = True
+USE_I18N = False
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -62,7 +62,7 @@ MEDIA_URL = '/site_media/'
 ADMIN_MEDIA_PREFIX = '/media/'
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'bk-e2zv3humar79nm=j*bwc=-ymeit(8a20whp3goq4dh71t)s'
+SECRET_KEY = ''
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -211,14 +211,6 @@ INTERNAL_IPS = (
 ugettext = lambda s: s
 LANGUAGES = (
     ('en', u'English'),
-    ('de', u'Deutsch'),
-    ('es', u'Español'),
-    ('fr', u'Français'),
-    ('sv', u'Svenska'),
-    ('pt-br', u'Português brasileiro'),
-    ('he', u'עברית'),
-    ('ar', u'العربية'),
-    ('it', u'Italiano'),
 )
 
 # URCHIN_ID = "ua-..."
