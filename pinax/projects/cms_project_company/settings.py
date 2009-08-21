@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-# Django settings for basic pinax project.
+# Django settings for company cms project.
 
 import os.path
+import posixpath
 import pinax
 
 PINAX_ROOT = os.path.abspath(os.path.dirname(pinax.__file__))
@@ -59,7 +60,7 @@ MEDIA_URL = '/site_media/'
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/admin/'
+ADMIN_MEDIA_PREFIX = posixpath.join(MEDIA_URL, "admin/")
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = ''
@@ -178,6 +179,11 @@ LOGIN_REDIRECT_URLNAME = "home"
 SERIALIZATION_MODULES = {
     "jsonfk": "pinax.core.serializers.jsonfk",
 }
+
+STATICFILES_EXTRA_MEDIA = (
+    ('pinax', os.path.join(PINAX_ROOT, 'media', PINAX_THEME)),
+    ('cms_project_company', os.path.join(PROJECT_ROOT, 'media')),
+)
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.

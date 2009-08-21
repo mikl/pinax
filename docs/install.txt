@@ -1,9 +1,6 @@
 Installation
 ============
 
-Pinax should be run in a virtual environment containing pip, Django and Pinax
-itself.
-
 We have two different approaches to installing Pinax. The best approach is to
 download our stable release and follow the :ref:`install-released-tarball-instructions`.
 The benefit to this approach is that it requires absolutely no Internet
@@ -11,7 +8,7 @@ connection once you have downloaded the tarball.
 
 The alternative approach is to start from the development version. You can
 take this approach by following the :ref:`install-development-instructions`. This means
-you will be working with the bleeding edge of our code. We can not gurantee
+you will be working with the bleeding edge of our code. We can not guarantee
 any stability.
 
 Alternatively, if you prefer or use `Buildout`_ see the
@@ -137,6 +134,10 @@ directory. Lastly, let's get it running::
 
 Point your browser at http://localhost:8000/ and you should see the Pinax
 default homepage!
+
+Note that mail and some notifications are queued rather than delivered
+immediately. See :ref:`ref-sending-mail-and-notices` for details.
+
 
 What's next?
 ------------

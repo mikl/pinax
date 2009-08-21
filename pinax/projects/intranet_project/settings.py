@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-# Django settings for basic pinax project.
+# Django settings for intranet project.
 
 import os.path
+import posixpath
 import pinax
 
 PINAX_ROOT = os.path.abspath(os.path.dirname(pinax.__file__))
@@ -59,7 +60,7 @@ MEDIA_URL = '/site_media/'
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = posixpath.join(MEDIA_URL, "admin/")
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = ''
@@ -132,12 +133,14 @@ INSTALLED_APPS = (
     'uni_form',
     'django_markup',
     'attachments',
+    'filter',
     
     # internal (for now)
     'basic_profiles',
     'account',
     'signup_codes',
     'groups',
+    'topics',
     'tagging_utils',
     'threadedcomments_extras',
     #'pastebin',
@@ -180,7 +183,14 @@ ACCOUNT_EMAIL_VERIFICATION = False
 
 AUTHENTICATED_EXEMPT_URLS = [
     r"^/account/signup/$",
+    r"^/account/password_reset",
+    r"^/account/confirm_email",
 ]
+
+STATICFILES_EXTRA_MEDIA = (
+    ('pinax', os.path.join(PINAX_ROOT, 'media', PINAX_THEME)),
+    ('intranet_project', os.path.join(PROJECT_ROOT, 'media')),
+)
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.

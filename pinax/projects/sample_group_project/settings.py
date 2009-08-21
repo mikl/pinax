@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-# Django settings for temporary group project.
+# Django settings for group project.
 
 import os.path
+import posixpath
 import pinax
 
-PINAX_ROOT = os.path.realpath(os.path.dirname(pinax.__file__))
+PINAX_ROOT = os.path.abspath(os.path.dirname(pinax.__file__))
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 # tells Pinax to use the default theme
@@ -59,7 +60,7 @@ MEDIA_URL = '/site_media/'
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = posixpath.join(MEDIA_URL, "admin/")
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = ''
@@ -135,6 +136,7 @@ INSTALLED_APPS = (
     'photologue',
     'attachments',
     'django_markup',
+    'filter',
     
     # internal (for now)
     'basic_profiles',
@@ -183,6 +185,11 @@ CONTACT_EMAIL = "feedback@example.com"
 SITE_NAME = "Pinax"
 LOGIN_URL = "/account/login/"
 LOGIN_REDIRECT_URLNAME = "what_next"
+
+STATICFILES_EXTRA_MEDIA = (
+    ('pinax', os.path.join(PINAX_ROOT, 'media', PINAX_THEME)),
+    ('sample_group_project', os.path.join(PROJECT_ROOT, 'media')),
+)
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.

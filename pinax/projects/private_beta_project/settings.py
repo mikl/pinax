@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-# Django settings for basic pinax project.
+# Django settings for private beta project.
 
 import os.path
+import posixpath
 import pinax
 
 PINAX_ROOT = os.path.abspath(os.path.dirname(pinax.__file__))
@@ -59,7 +60,7 @@ MEDIA_URL = '/site_media/'
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = posixpath.join(MEDIA_URL, "admin/")
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = ''
@@ -76,6 +77,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django_openid.consumer.SessionConsumer',
     'account.middleware.LocaleMiddleware',
+    'account.middleware.AuthenticatedMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'pagination.middleware.PaginationMiddleware',
     'pinax.middleware.security.HideSensistiveFieldsMiddleware',
@@ -163,6 +165,19 @@ CONTACT_EMAIL = "feedback@example.com"
 SITE_NAME = "Pinax"
 LOGIN_URL = "/account/login/"
 LOGIN_REDIRECT_URLNAME = "what_next"
+
+AUTHENTICATED_EXEMPT_URLS = [
+    r"^/$",
+    r"^/success/$",
+    r"^/account/signup/$",
+    r"^/account/password_reset",
+    r"^/account/confirm_email",
+]
+
+STATICFILES_EXTRA_MEDIA = (
+    ('pinax', os.path.join(PINAX_ROOT, 'media', PINAX_THEME)),
+    ('private_beta_project', os.path.join(PROJECT_ROOT, 'media')),
+)
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
