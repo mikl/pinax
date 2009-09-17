@@ -17,6 +17,10 @@ TEMPLATE_DEBUG = DEBUG
 # tells Pinax to serve media through django.views.static.serve.
 SERVE_MEDIA = DEBUG
 
+INTERNAL_IPS = (
+    '127.0.0.1',
+)
+
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
@@ -50,17 +54,30 @@ USE_I18N = False
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-
-MEDIA_ROOT = os.path.join(PROJECT_ROOT, "site_media")
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'site_media', 'media')
 
 # URL that handles the media served from MEDIA_ROOT.
 # Example: "http://media.lawrence.com"
-MEDIA_URL = '/site_media/'
+MEDIA_URL = '/site_media/media/'
+
+# Absolute path to the directory that holds static files like app media.
+# Example: "/home/media/media.lawrence.com/apps/"
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'site_media', 'static')
+
+# URL that handles the static files like app media.
+# Example: "http://media.lawrence.com"
+STATIC_URL = '/site_media/static/'
+
+# Additional directories which hold static files
+STATICFILES_DIRS = (
+    ('social_project', os.path.join(PROJECT_ROOT, 'media')),
+    ('pinax', os.path.join(PINAX_ROOT, 'media', PINAX_THEME)),
+)
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = posixpath.join(MEDIA_URL, "admin/")
+ADMIN_MEDIA_PREFIX = posixpath.join(STATIC_URL, "admin/")
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = ''
@@ -82,6 +99,7 @@ MIDDLEWARE_CLASSES = (
     'django_sorting.middleware.SortingMiddleware',
     'djangodblog.middleware.DBLogMiddleware',
     'pinax.middleware.security.HideSensistiveFieldsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
 )
 
@@ -98,10 +116,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
     "django.core.context_processors.request",
-
-    "pinax.core.context_processors.contact_email",
-    "pinax.core.context_processors.site_name",
-
+    
+    "pinax.core.context_processors.pinax_settings",
+    
     "notification.context_processors.notification",
     "announcements.context_processors.site_wide_announcements",
     "account.context_processors.openid",
@@ -146,7 +163,6 @@ INSTALLED_APPS = (
     'wiki',
     'swaps',
     'timezones',
-    'app_plugins',
     'voting',
     'voting_extras',
     'tagging',
@@ -161,11 +177,12 @@ INSTALLED_APPS = (
     'uni_form',
     'django_sorting',
     'django_markup',
+    'staticfiles',
+    'debug_toolbar',
     
     # internal (for now)
     'analytics',
     'profiles',
-    'staticfiles',
     'account',
     'signup_codes',
     'tribes',
@@ -179,7 +196,7 @@ INSTALLED_APPS = (
 )
 
 ABSOLUTE_URL_OVERRIDES = {
-    "auth.user": lambda o: "/profiles/%s/" % o.username,
+    "auth.user": lambda o: "/profiles/profile/%s/" % o.username,
 }
 
 MARKUP_FILTER_FALLBACK = 'none'
@@ -216,6 +233,8 @@ LANGUAGES = (
 
 # URCHIN_ID = "ua-..."
 
+YAHOO_MAPS_API_KEY = "..."
+
 class NullStream(object):
     def write(*args, **kwargs):
         pass
@@ -242,11 +261,6 @@ WIKI_REQUIRES_LOGIN = True
 # Uncomment this line after signing up for a Yahoo Maps API key at the
 # following URL: https://developer.yahoo.com/wsregapp/
 # YAHOO_MAPS_API_KEY = ''
-
-STATICFILES_EXTRA_MEDIA = (
-    ('pinax', os.path.join(PINAX_ROOT, 'media', PINAX_THEME)),
-    ('social_project', os.path.join(PROJECT_ROOT, 'media')),
-)
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.

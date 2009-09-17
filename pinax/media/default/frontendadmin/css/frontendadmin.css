@@ -10,15 +10,15 @@ a.frontendadmin {
 }
 
 a.frontendadmin.frontendadmin_edit {
-  background-image: url(/site_media/pinax/images/silk/icons/page_white_edit.png);
+  background-image: url(../../pinax/images/silk/icons/page_white_edit.png);
 }
 
 a.frontendadmin.frontendadmin_add {
-  background-image: url((/site_media/pinax/images/silk/icons/add.png);
+  background-image: url(../../pinax/images/silk/icons/add.png);
 }
 
 a.frontendadmin.frontendadmin_delete {
-  background-image: url((/site_media/pinax/images/silk/icons/delete.png);
+  background-image: url(../../pinax/images/silk/icons/delete.png);
 }
 
 p.image a.frontendadmin{
@@ -66,7 +66,8 @@ fieldset.frontendadmin p label {
 
 fieldset.frontendadmin p input[type=text],
 fieldset.frontendadmin p input[type=password],
-fieldset.frontendadmin p textarea {
+fieldset.frontendadmin p textarea
+{
   width: 99%;
 }
 
@@ -93,7 +94,8 @@ fieldset.frontendadmin ul.errorlist li {
 }
 
 fieldset.frontendadmin span.help,
-fieldset.frontendadmin span.preview {
+fieldset.frontendadmin span.preview
+{
   display: block;
   font-size: 0.95em;
   line-height: 1.2em;

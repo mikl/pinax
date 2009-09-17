@@ -16,7 +16,7 @@ class LocaleMiddleware(object):
     and decides what translation object to install in the current
     thread context depending on the user's account. This allows pages
     to be dynamically translated to the language the user desires
-    (if the language is available, of course). 
+    (if the language is available, of course).
     """
 
     def get_language_for_user(self, request):
@@ -47,6 +47,7 @@ class AuthenticatedMiddleware(object):
         self.login_url = login_url
         self.exemptions = [
             r"^%s" % settings.MEDIA_URL,
+            r"^%s" % settings.STATIC_URL,
             r"^%s$" % login_url,
         ] + getattr(settings, "AUTHENTICATED_EXEMPT_URLS", [])
     

@@ -1,5 +1,6 @@
 import os
 import sys
+import urllib
 
 PINAX_GIT_LOCATION = 'git://github.com/pinax/pinax.git'
 PINAX_PYPI_MIRRORS = [
@@ -10,18 +11,13 @@ PINAX_MUST_HAVES = {
     'setuptools-git': ('0.3.4', 'setuptools_git-0.3.4.tar.gz'),
     'setuptools-dummy': ('0.0.3', 'setuptools_dummy-0.0.3.tar.gz'),
     'Django': ('1.0.3', 'Django-1.0.3.tar.gz'),
-    'pip': ('0.4', 'pip-0.4.tar.gz'),
+    'pip': ('0.4.1dev', 'pip-0.4.1dev.tar.gz'),
 }
 
 DJANGO_VERSIONS = (
     '1.0.3',
 #    '1.1',
 )
-
-JAUNTY_FIX = """/usr/lib/python2.6/dist-packages
-/var/lib/python-support/python2.6
-/usr/local/lib/python2.6/dist-packages
-"""
 
 if sys.platform == 'win32':
     GIT_CMD = 'git.cmd'
@@ -40,6 +36,18 @@ if os.path.exists(pydistutils):
     print "ERROR: Please make sure you remove any previous custom paths from"
     print "your %s file." % pydistutils
     sys.exit(3)
+
+def filename_to_url(filename):
+    """
+    Convert a path to a file: URL.  The path will be made absolute.
+    """
+    filename = os.path.normcase(os.path.abspath(filename))
+    drive, filename = os.path.splitdrive(filename)
+    filepath = filename.split(os.path.sep)
+    url = '/'.join([urllib.quote(part) for part in filepath])
+    if not drive:
+        url = url.lstrip('/')
+    return 'file:///' + drive + url
 
 def winpath(path):
     if sys.platform == 'win32':
@@ -89,22 +97,6 @@ def resolve_command(cmd, path=None, pathext=None):
         sys.exit(3)
     return os.path.realpath(cmd)
 
-try:
-    import pip
-except ImportError:
-    pass
-else:
-    from pkg_resources import get_distribution, parse_version
-    version = get_distribution('pip').version
-    if parse_version(version) == parse_version('0.3dev'):
-        print 'ERROR: this script requires pip 0.3.1 or greater.'
-        print 'Since you decided to use a development version of pip, please make sure you are using a recent one.'
-        sys.exit(101)
-    elif parse_version(version) < parse_version('0.3.1'):
-        print 'ERROR: this script requires pip 0.3.1 or greater.'
-        print 'Please upgrade your pip %s to create a Pinax virtualenv.' % version
-        sys.exit(101)
-
 def extend_parser(parser):
     parser.add_option("-s", "--source",
         metavar="DIR_OR_URL", dest="pinax_source", default=PINAX_GIT_LOCATION,
@@ -138,10 +130,39 @@ def adjust_options(options, args):
     if not args:
         return # caller will raise error
 
-def install_base(easy_install, requirements_dir, packages):
+def install_base(parent_dir, bin_dir, requirements_dir, packages):
     """
-    Installs pip from the bundled tarball if existing
+    Installs base packages from the bundled tarball if existing
     """
+    packages = packages.copy() # prevent changing the global data
+    
+    find_links = []
+    for mirror in PINAX_PYPI_MIRRORS:
+        find_links.extend(['--find-links', mirror])
+    
+    # we have to special case pip here and install it with easy_install
+    # because in most cases the user installed pip with easy_install which if
+    # we installed it another way won't work.
+    easy_install = resolve_command(EASY_INSTALL_CMD, bin_dir)
+    pip_package = packages.pop("pip")
+    version, filename = pip_package
+    src = join(requirements_dir, 'base', filename)
+    if not os.path.exists(src):
+        # get it from the PyPI
+        src = 'pip==%s' % version
+    logger.notify('Installing pip %s' % version)
+    call_subprocess([
+        easy_install,
+        '--quiet',
+        '--always-copy',
+        '--always-unzip',
+    ] + find_links + [
+        src,
+    ], filter_stdout=filter_lines, show_stdout=False)
+    
+    # resolve path to the freshly installed pip
+    pip = resolve_command(PIP_CMD, bin_dir)
+    
     for pkg in packages:
         version, filename = packages[pkg]
         src = join(requirements_dir, 'base', filename)
@@ -149,39 +170,17 @@ def install_base(easy_install, requirements_dir, packages):
             # get it from the PyPI
             src = '%s==%s' % (pkg, version)
         logger.notify('Installing %s %s' % (pkg, version))
-        find_links = []
-        for mirror in PINAX_PYPI_MIRRORS:
-            find_links.extend(['--find-links', mirror])
         call_subprocess([
-            easy_install,
+            pip,
+            'install',
             '--quiet',
-            '--always-copy',
-            '--always-unzip',
+            '--no-deps',
+            '--ignore-installed',
         ] + find_links + [
             src,
         ], filter_stdout=filter_lines, show_stdout=False)
-
-def release_files_exist(release_dir, requirements_file):
-    f = open(requirements_file)
-    requirements = f.read()
-    f.close()
-    requirements = requirements.splitlines()
-    available_requirements, missing_requirements = [], []
-    result = True
-    for no, line in enumerate(requirements):
-        line = line.strip()
-        if not line or line.startswith('#'):
-            continue
-        requirement = os.path.normpath(join(release_dir, line))
-        if not os.path.exists(requirement):
-            result = False
-            missing_requirements.append(requirement)
-        else:
-            available_requirements.append(requirement)
-    if result:
-        return True, available_requirements
-    else:
-        return False, missing_requirements
+    
+    return pip
 
 def after_install(options, home_dir):
     this_dir = os.path.dirname(__file__)
@@ -190,14 +189,9 @@ def after_install(options, home_dir):
     parent_dir = join(this_dir, '..')
 
     python = resolve_command(expected_exe, bin_dir)
-    easy_install = resolve_command(EASY_INSTALL_CMD, bin_dir)
 
-    # pip and setuptools-git is required in any case
     requirements_dir = join(parent_dir, 'requirements')
-    install_base(easy_install, requirements_dir, PINAX_MUST_HAVES)
-
-    # resolve path to pip
-    pip = resolve_command(PIP_CMD, bin_dir)
+    pip = install_base(parent_dir, bin_dir, requirements_dir, PINAX_MUST_HAVES)
 
     version_file = join(parent_dir, 'VERSION')
     if os.path.exists(version_file) and not options.release:
@@ -208,17 +202,9 @@ def after_install(options, home_dir):
         if version:
             options.release = version
 
-    # FIXME we really should get that fixed in virtualenv upstream for Jaunty
-    if (not options.no_site_packages and
-            os.path.exists('/usr/lib/python2.6/dist-packages')):
-        jaunty_path_fix = join(lib_dir, 'site-packages', 'jaunty-fix.pth')
-        f = open(jaunty_path_fix, 'wb')
-        f.write(JAUNTY_FIX)
-        f.close()
-
     if options.development:
         logger.notify('Going to setup a Pinax development environment.')
-        # For developers and other crazy trunk lovers
+        # For developers and other crazy HEAD lovers
         source = options.pinax_source
         if os.path.exists(source):
             # A directory was given as a source for bootstrapping
@@ -251,43 +237,34 @@ def after_install(options, home_dir):
         # release should *never* touch the Internet.
         logger.notify('Going to install a full Pinax %s release.' % options.release)
         release_dir = join(requirements_dir, options.release)
-        # We use easy_install for now, as long as pip can't be run on Windows
-        # call_subprocess([pip, 'install', '--upgrade',
-        #         '--requirement', os.path.abspath(join(release_dir, 'full.txt')),
-        #         '--environment', home_dir], show_stdout=True, cwd=release_dir)
-        requirements_file = os.path.realpath(join(release_dir, 'full.txt'))
+        requirements_file = os.path.abspath(join(release_dir, 'release.txt'))
         if not os.path.exists(requirements_file):
             print "ERROR: no requirements were found for version %s." % options.release
             sys.exit(101)
-
-        # check if this is a full release with bundled packages
-        result, requirements = release_files_exist(release_dir, requirements_file)
-        # get the packages from the PyPI, requires internet connection
-        if not result:
-            print "This release does not have all the required requirements:"
-            for line in requirements:
-                print "    %s" % os.path.basename(line)
-            sys.exit(101)
-            
-        for no, line in enumerate(requirements):
-            line = line.strip()
-            if not line or line.startswith('#'):
-                continue
-            logger.notify('Installing %s' % line)
-            call_subprocess([
-                easy_install,
-                '--quiet',
-                '--always-unzip',
-                line
-            ], filter_stdout=filter_lines, show_stdout=False)
-
-        logger.notify("Please activate the newly created virtualenv by running in '%s': "
-                      % home_dir)
         logger.indent += 2
-        logger.notify("'source bin/activate' on Linux/Unix/Mac OS "
-                      "or '.\\Scripts\\activate.bat' on Windows")
+        try:
+            logger.notify('Installing Pinax')
+            call_subprocess([
+                pip,
+                'install',
+                '--no-deps',
+                '--no-index',
+                '--ignore-installed',
+                '--environment', home_dir,
+                '--requirement', requirements_file,
+                '--find-links', filename_to_url(release_dir),
+            ], show_stdout=True)
+        finally:
+            logger.indent -= 2
+        env_dir = os.path.normpath(home_dir)
+        logger.notify("Please activate the newly created virtualenv by running: ")
+        logger.indent += 2
+        if sys.platform == "win32":
+            logger.notify("%s\\Scripts\\activate.bat" % env_dir)
+        else:
+            logger.notify("source %s/bin/activate" % env_dir)
         logger.indent -= 2
-        logger.notify('Pinax environment created successfully.')
+        logger.notify("Pinax environment created successfully.")
     else:
         logger.notify("Cannot locate a VERSION file for release. You are "
             "likely not running from a release tarball. Perhaps you meant to "
