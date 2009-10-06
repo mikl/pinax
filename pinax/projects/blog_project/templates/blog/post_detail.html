@@ -1,5 +1,13 @@
 {% extends "blog/base_blog.html" %}
-{% load blog tagging_tags inlines cache pygment_tags oembed_tags i18n %}
+{% load blog %}
+{% load tagging_tags %}
+{% load comments_tag %}
+{% load inlines %}
+{% load cache %}
+{% load pygment_tags %}
+{% load oembed_tags %}
+{% load i18n %}
+
 
 {% block title %}{{ object.title }} | {{ block.super }}{% endblock %}
 
@@ -59,6 +67,6 @@
   </div>
   <!-- post -->
 
-{% include "blog/includes/comments.html" %}
+{% comments object %}
 
 {% endblock %}

@@ -1,4 +1,4 @@
-{% load disqus_tags flatblock_tags cache navbar generic_content blog compress analytics elsewhere feeds i18n %}
+{% load flatblock_tags cache navbar generic_content blog compress analytics elsewhere feeds i18n %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}" xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}">
     <head>
@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="{{ STATIC_URL }}css/960.css" type="text/css" media="all" charset="utf-8" />
         <link rel="stylesheet" href="{{ STATIC_URL }}css/pygments.css" type="text/css" media="all" charset="utf-8" />
         <link rel="stylesheet" href="{{ STATIC_URL }}css/base.css" type="text/css" media="all" charset="utf-8" />
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/themes/basic.css" type="text/css" media="all" charset="utf-8" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/themes/spring_green.css" type="text/css" media="all" charset="utf-8" />
         {% endcompress %}
 
         <!--[if IE 6]>
@@ -29,11 +29,10 @@
         </script>
         <![endif]-->
 
-        {% disqus_dev %}
         {% block extra_head %}{% endblock %}
     </head>
 
-<body id="{% block body_id %}default{% endblock %}" class="{% block body_class %}blog{% endblock %}">
+<body id="{% block body_id %}mikkel_hoegh_org{% endblock %}" class="{% block body_class %}blog{% endblock %}">
     <div id="bleeder"></div>
 
     <div id="body-container" class="clearfix">
@@ -43,7 +42,7 @@
     <div id="header" class="clearfix">
         <div id="logo">
             <h1><a href="/" title="{{ BLOG_SETTINGS.site_name }}">{{ BLOG_SETTINGS.site_name }}</a></h1>
-            <!-- a href="{{ SITE_URL }}" title="Your blog logo here"><img class="logo" src="{{ STATIC_URL }}imgs/logo-blog-color-trans2.png" alt="Monty Lounge Industries"></a -->
+            {# a href="{{ SITE_URL }}" title="Your blog logo here"><img class="logo" src="{{ STATIC_URL }}imgs/logo-blog-color-trans2.png" alt="Monty Lounge Industries"></a #}
         </div>
         <!-- /logo -->
 
@@ -51,7 +50,6 @@
             {% cache 3600 "base.navbars" %}
             {% navbars %}
             {% endcache %}
-            {# <form action="/search/" method="get"><input type="text" name="q" value="{{ search_term }}"><input type="submit" class="button" value="Search"></form> #}
         </div>
         <!-- /nav -->
 
@@ -72,13 +70,6 @@
 
             <h4>{% trans "About" %}</h4>
             <p>{{ BLOG_SETTINGS.about }}</p>
-
-            <h4>Subscribe</h4>
-            <ul>
-                <li><a href="{{ BLOG_SETTINGS.twitter_url }}" title="Follow me on Twitter">Twitter</a></li>
-                <li><a href="{{ BLOG_SETTINGS.rss_url }}" title="Subscribe via RSS">RSS</a></li>
-                <li><a href="{{ BLOG_SETTINGS.email_subscribe_url }}" title="Subscribe via Email">Email</a></li>
-            </ul>
 
             <h4>{% trans "Elsewhere" %}</h4>
             <ul>
@@ -120,16 +111,6 @@
             </ul>
             {% endcache %}
 
-            {% cache 1800 "delicious.popular" %}
-            {% parse_feed 'http://feeds.delicious.com/v2/rss/tag/django?count=15' as items %}
-            <h4>{% trans "Django Popular" %}</h4>
-            <ul class="recent-posts">
-            {% for item in items.entries %}
-            <li><a href="{{ item.link }}" title="{{ item.title }}">{{ item.title }}</a></li>
-            {% endfor %}
-            </ul>
-            {% endcache %}
-
         </div>
         <!-- /grid_6 -->
     </div>
@@ -148,18 +129,10 @@
     </div>
     <!-- /footer -->
 
-    <!-- disqus "Code Snippet #2" -->
-
-    {% cache 3600 "disqus_num_replies" %}
-    {% with BLOG_SETTINGS.disqus_shortname as shortname %}
-    {% disqus_num_replies shortname %}
-    {% endwith %}
-    {% endcache %}
-
-    <!-- Google Analytics -->
     {% cache 7200 "base.analytics" %}
     {% analytics %}
     {% endcache %}
 
 </body>
 </html>
+

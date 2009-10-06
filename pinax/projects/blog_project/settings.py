@@ -39,7 +39,7 @@ DATABASE_PORT = ''             # Set to empty string for default. Not used with 
 # although not all variations may be possible on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'US/Eastern'
+TIME_ZONE = 'Europe/Copenhagen'
 
 # Language code for this installation. All choices can be found here:
 # http://www.w3.org/TR/REC-html40/struct/dirlang.html#langcodes
@@ -95,7 +95,6 @@ MIDDLEWARE_CLASSES = (
     'django_openid.consumer.SessionConsumer',
     'account.middleware.LocaleMiddleware',
     'django.middleware.doc.XViewMiddleware',
-    'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     'sugar.middleware.debugging.UserBasedExceptionMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'djangodblog.DBLogMiddleware',
@@ -130,15 +129,15 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 INSTALLED_APPS = (
     # included
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.humanize',
     'django.contrib.admin',
-    'django.contrib.sitemaps',
+    'django.contrib.auth',
+    'django.contrib.comments',
+    'django.contrib.contenttypes',
     'django.contrib.flatpages',
-    'django.contrib.redirects',
+    'django.contrib.humanize',
+    'django.contrib.sessions',
+    'django.contrib.sitemaps',
+    'django.contrib.sites',
     'pinax.templatetags',
 
     # external
@@ -146,7 +145,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'tagging',
     'djangodblog',
-    'disqus',
+    'threadedcomments',
     'basic.inlines',
     'basic.blog',
     'basic.bookmarks',
@@ -167,21 +166,18 @@ INSTALLED_APPS = (
     'contact_form',
     'honeypot',
     'sugar',
-    'quoteme',
     'emailconfirmation',
     'mailer',
     'announcements',
     'pagination',
     'timezones',
-    'ajax_validation',
-    'uni_form',
     'staticfiles',
 
     # internal (for now)
     'basic_profiles',
     'account',
+    'threadedcomments_extras',
     'signup_codes',
-    'django.contrib.admin',
     'mingus',
 )
 
@@ -189,7 +185,7 @@ ABSOLUTE_URL_OVERRIDES = {
     "auth.user": lambda o: "/profiles/profile/%s/" % o.username,
 }
 
-HONEYPOT_FIELD_NAME = 'fonzie_kungfu'
+HONEYPOT_FIELD_NAME = 'alphabetical'
 
 MARKUP_FILTER_FALLBACK = 'none'
 MARKUP_CHOICES = (
@@ -198,12 +194,8 @@ MARKUP_CHOICES = (
     ('markdown', u'Markdown'),
     ('creole', u'Creole'),
 )
-WIKI_MARKUP_CHOICES = MARKUP_CHOICES
 
-AUTH_PROFILE_MODULE = 'basic_profiles.Profile'
-NOTIFICATION_LANGUAGE_MODULE = 'account.Account'
-
-ACCOUNT_OPEN_SIGNUP = True
+ACCOUNT_OPEN_SIGNUP = False
 ACCOUNT_REQUIRED_EMAIL = False
 ACCOUNT_EMAIL_VERIFICATION = False
 
@@ -211,8 +203,6 @@ EMAIL_CONFIRMATION_DAYS = 2
 EMAIL_DEBUG = DEBUG
 CONTACT_EMAIL = "feedback@example.com"
 SITE_NAME = "Pinax"
-LOGIN_URL = "/account/login/"
-LOGIN_REDIRECT_URLNAME = "what_next"
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
