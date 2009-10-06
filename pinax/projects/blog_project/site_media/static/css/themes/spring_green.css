@@ -42,12 +42,12 @@ pre {
 
 ul.responses {
   margin: 2em 0 2em 0;
-  border-top: 1px solid #618d5a;
+  border-top: 1px solid #bcd8b8;
   padding-top: 1em;
 }
 
 ul.responses li {
-  border-bottom: 1px solid #618d5a;
+  border-bottom: 1px solid #bcd8b8;
   margin-bottom: 0.5em;
   padding-bottom: 0.5em;
 }
@@ -55,4 +55,3 @@ ul.responses li {
 ul.responses li .meta {
   font-size: 0.8em;
 }
-
