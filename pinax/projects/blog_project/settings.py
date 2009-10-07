@@ -92,8 +92,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django_openid.consumer.SessionConsumer',
-    'account.middleware.LocaleMiddleware',
     'django.middleware.doc.XViewMiddleware',
     'sugar.middleware.debugging.UserBasedExceptionMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
