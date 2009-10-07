@@ -116,9 +116,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
     "pinax.core.context_processors.pinax_settings",
 
-    "announcements.context_processors.site_wide_announcements",
-    "account.context_processors.openid",
-    "account.context_processors.account",
     "basic.blog.context_processors.blog_settings",
     "mingus.context_processors.site_info",
     "navbar.context_processors.navbars",
