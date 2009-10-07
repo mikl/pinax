@@ -15,7 +15,7 @@ http://www.aeracode.org/releases/south/south-0.6.1.tar.gz
 -e git+git://github.com/montylounge/django-disqus.git#egg=disqus
 -e svn+http://django-navbar.googlecode.com/svn/trunk#egg=navbar
 -e svn+http://django-db-log.googlecode.com/svn/trunk#egg=djangodblog
-sorl==3.1
+-e hg+https://sorl-thumbnail.googlecode.com/hg/#egg=sorl
 django-oembed==0.1.0
 -e svn+http://django-template-utils.googlecode.com/svn/trunk#egg=template_utils
 -e hg+https://bitbucket.org/montylounge/django-proxy/#egg=django_proxy
