@@ -1005,13 +1005,13 @@ PINAX_PYPI_MIRRORS = [
 PINAX_MUST_HAVES = {
     'setuptools-git': ('0.3.4', 'setuptools_git-0.3.4.tar.gz'),
     'setuptools-dummy': ('0.0.3', 'setuptools_dummy-0.0.3.tar.gz'),
-    'Django': ('1.0.3', 'Django-1.0.3.tar.gz'),
+    'Django': ('1.1', 'Django-1.1.tar.gz'),
     'pip': ('0.4.1dev', 'pip-0.4.1dev.tar.gz'),
 }
 
 DJANGO_VERSIONS = (
-    '1.0.3',
-#    '1.1',
+#    '1.0.3',
+    '1.1',
 )
 
 if sys.platform == 'win32':
