@@ -20,7 +20,6 @@ django-oembed==0.1.0
 -e svn+http://django-template-utils.googlecode.com/svn/trunk#egg=template_utils
 -e hg+https://bitbucket.org/montylounge/django-proxy/#egg=django_proxy
 
-django-robots==0.6.1
 -e git+git://github.com/mintchaos/django_compressor.git#egg=compressor
 django-markup==0.3
 -e git+git://github.com/montylounge/django-google-analytics.git#egg=google_analytics
@@ -28,4 +27,4 @@ django-markup==0.3
 -e hg+https://bitbucket.org/ubernostrum/django-contact-form/#egg=contact_form
 -e git+git://github.com/sunlightlabs/django-honeypot.git#egg=honeypot
 -e git+git://github.com/montylounge/django-sugar.git#egg=sugar
--e git+git://github.com/montylounge/django-quoteme.git#egg=quoteme
+-e git+git://github.com/mikl/django-threadedcomments.git#egg=threadedcomments

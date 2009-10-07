@@ -141,10 +141,8 @@ INSTALLED_APPS = (
     'pinax.templatetags',
 
     # external
-    'django_openid',
     'django_extensions',
     'tagging',
-    'djangodblog',
     'threadedcomments',
     'basic.inlines',
     'basic.blog',
@@ -159,7 +157,6 @@ INSTALLED_APPS = (
     'django_proxy',
     'django_markup',
     'google_analytics',
-    'robots',
     'basic.elsewhere',
     'compressor',
     'debug_toolbar',
@@ -167,23 +164,14 @@ INSTALLED_APPS = (
     'honeypot',
     'sugar',
     'emailconfirmation',
-    'mailer',
-    'announcements',
     'pagination',
     'timezones',
     'staticfiles',
 
     # internal (for now)
-    'basic_profiles',
-    'account',
     'threadedcomments_extras',
-    'signup_codes',
     'mingus',
 )
-
-ABSOLUTE_URL_OVERRIDES = {
-    "auth.user": lambda o: "/profiles/profile/%s/" % o.username,
-}
 
 HONEYPOT_FIELD_NAME = 'alphabetical'
 
