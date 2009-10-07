@@ -24,7 +24,7 @@ django-staticfiles==0.1.2
 -e svn+http://django-template-utils.googlecode.com/svn/trunk#egg=template_utils
 -e hg+https://bitbucket.org/montylounge/django-proxy/#egg=django_proxy
 
--e git+git://github.com/mintchaos/django_compressor.git#egg=compressor
+-e git+git://github.com/dziegler/django-css.git#egg=compressor
 django-markup==0.3
 -e git+git://github.com/montylounge/django-google-analytics.git#egg=google_analytics
 -e hg+https://bitbucket.org/kmike/django-view-cache-utils/#egg=view_cache_utils
